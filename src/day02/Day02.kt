@@ -1,3 +1,9 @@
+package day02
+
+import checkEquals
+import println
+import readInputCsv
+
 fun main() {
     fun sumOfInvalidIndices(input: List<String>, handleIndex: (Long) -> Boolean): Long {
         return input.fold(0L) { sumOfInvalidIds, it ->
@@ -40,12 +46,12 @@ fun main() {
     checkEquals(part2(listOf("11-22", "12-21", "565653-565659")), 565689L)
 
     // Or read a large test input from the `src/Day02_test.txt` file:
-    val testInput = readInputCsv("Day02_test")
+    val testInput = readInputCsv("day02/Day02_test")
     checkEquals(part1(testInput), 1227775554L)
     checkEquals(part2(testInput), 4174379265L)
 
     // Read the input from the `src/Day02.txt` file.
-    val input = readInputCsv("Day02")
+    val input = readInputCsv("day02/Day02")
     part1(input).println("Part 1: ")
     part2(input).println("Part 2: ")
 }

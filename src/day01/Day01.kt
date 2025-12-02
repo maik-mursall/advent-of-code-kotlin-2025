@@ -1,3 +1,8 @@
+package day01
+
+import println
+import readInput
+
 data class SafeSimulationResult(
     val zeroCount: Int,
     val wrapCount: Int
@@ -76,12 +81,12 @@ fun main() {
     check(part2(listOf("R50")) == 1)
 
     // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
+    val testInput = readInput("day01/Day01_test")
     check(part1(testInput) == 3)
     check(part2(testInput) == 6)
 
     // Read the input from the `src/Day01.txt` file.
-    val input = readInput("Day01")
+    val input = readInput("day01/Day01")
     part1(input).println()
     part2(input).println()
 }
