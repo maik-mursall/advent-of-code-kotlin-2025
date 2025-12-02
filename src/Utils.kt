@@ -29,3 +29,12 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+/**
+ * Shorthand for printing output with optional prefix and postfix.
+ */
+fun Any?.println(prefix: String = "", postfix: String = "") = kotlin.io.println("$prefix$this$postfix")
+
+fun checkEquals(expected: Any?, actual: Any?) {
+    check(actual == expected) { "$actual is not equal to $expected" }
+}
