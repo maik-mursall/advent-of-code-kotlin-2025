@@ -24,11 +24,11 @@ fun main() {
     check(part1(listOf("11-22")) == 33L)
     check(part1(listOf("565653-565659")) == 0L)
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
+    // Or read a large test input from the `src/Day02_test.txt` file:
     val testInput = readInputCsv("Day02_test")
     check(part1(testInput) == 1227775554L)
 
-    // Read the input from the `src/Day01.txt` file.
+    // Read the input from the `src/Day02.txt` file.
     val input = readInputCsv("Day02")
     part1(input).println()
 }
