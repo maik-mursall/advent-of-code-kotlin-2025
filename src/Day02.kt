@@ -28,7 +28,7 @@ fun main() {
         (1..(idString.length / 2)).any { windowSize ->
             val subSet = idString.take(windowSize)
 
-            idString.windowed(subSet.length, subSet.length, true).all { it == subSet }
+            idString.windowed(windowSize, windowSize, true).all { it == subSet }
         }
     }
 
