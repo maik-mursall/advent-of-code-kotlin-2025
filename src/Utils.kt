@@ -4,9 +4,19 @@ import kotlin.io.path.Path
 import kotlin.io.path.readText
 
 /**
+ * Reads the entire content of the given txt file.
+ */
+fun readFile(name: String) = Path("src/$name.txt").readText().trim()
+
+/**
  * Reads lines from the given input txt file.
  */
-fun readInput(name: String) = Path("src/$name.txt").readText().trim().lines()
+fun readInput(name: String) = readFile(name).lines()
+
+/**
+ * Reads comma-separated values from the given input txt file.
+ */
+fun readInputCsv(name: String) = readFile(name).split(",").map(String::trim)
 
 /**
  * Converts string to md5 hash.
