@@ -1,46 +1,34 @@
 fun main() {
-    fun findInvalidIndices(input: List<String>, handleIndex: (Long) -> Long): Long {
+    fun sumOfInvalidIndices(input: List<String>, handleIndex: (Long) -> Boolean): Long {
         return input.fold(0L) { sumOfInvalidIds, it ->
             val (startId, endId) = it.split("-").map(String::toLong)
 
             sumOfInvalidIds + (startId..endId).fold(0L) { sumOfInvalidIdsInRange, id ->
-                sumOfInvalidIdsInRange + handleIndex(id)
+                val isInvalid = handleIndex(id)
+
+                sumOfInvalidIdsInRange + if (isInvalid) id else 0L
             }
         }
     }
 
-    fun part1(input: List<String>): Long {
-        return findInvalidIndices(input) { id ->
-            val idString = id.toString()
+    fun part1(input: List<String>) = sumOfInvalidIndices(input) { id ->
+        val idString = id.toString()
 
-            if (idString.length % 2 != 0) {
-                return@findInvalidIndices 0L
-            }
-
-            val idStringHalfLength = idString.length / 2
-            if (idString.take(idStringHalfLength) == idString.takeLast(idStringHalfLength)) {
-                return@findInvalidIndices id
-            } else {
-                return@findInvalidIndices 0L
-            }
+        if (idString.length % 2 != 0) {
+            return@sumOfInvalidIndices false
         }
+
+        val idStringHalfLength = idString.length / 2
+        return@sumOfInvalidIndices idString.take(idStringHalfLength) == idString.takeLast(idStringHalfLength)
     }
 
-    fun part2(input: List<String>): Long {
-        return findInvalidIndices(input) { id ->
-            val idString = id.toString()
+    fun part2(input: List<String>) = sumOfInvalidIndices(input) { id ->
+        val idString = id.toString()
 
-            for (i in 1..(idString.length / 2)) {
-                val subSet = idString.take(i)
+        (1..(idString.length / 2)).any { windowSize ->
+            val subSet = idString.take(windowSize)
 
-                val allMatch = idString.windowed(subSet.length, subSet.length, true).all { it == subSet }
-
-                if (allMatch) {
-                    return@findInvalidIndices id
-                }
-            }
-
-            0L
+            idString.windowed(subSet.length, subSet.length, true).all { it == subSet }
         }
     }
 
