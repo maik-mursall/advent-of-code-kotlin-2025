@@ -1,23 +1,34 @@
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
-    }
+    fun part1(input: List<String>): Long {
+        return input.fold(0L) { sumOfInvalidIds, it ->
+            val (startId, endId) = it.split("-").map(String::toLong)
 
-    fun part2(input: List<String>): Int {
-        return input.size
+            sumOfInvalidIds + (startId..endId).fold(0L) { sumOfInvalidIdsInRange, id ->
+                val idStr = id.toString()
+
+                if (idStr.length % 2 != 0) {
+                    return@fold sumOfInvalidIdsInRange
+                }
+
+                val idStrHalfLength = idStr.length / 2
+                if (idStr.take(idStrHalfLength) == idStr.takeLast(idStrHalfLength)) {
+                    sumOfInvalidIdsInRange + id
+                } else {
+                    sumOfInvalidIdsInRange
+                }
+            }
+        }
     }
 
     // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("R50")) == 1)
-    check(part2(listOf("R50")) == 1)
+    check(part1(listOf("11-22")) == 33L)
+    check(part1(listOf("565653-565659")) == 0L)
 
     // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day02_test")
-    check(part1(testInput) == 1)
-    check(part2(testInput) == 1)
+    val testInput = readInputCsv("Day02_test")
+    check(part1(testInput) == 1227775554L)
 
     // Read the input from the `src/Day01.txt` file.
-    val input = readInput("Day02")
+    val input = readInputCsv("Day02")
     part1(input).println()
-    part2(input).println()
 }
