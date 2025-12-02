@@ -1,22 +1,34 @@
 fun main() {
-    fun part1(input: List<String>): Long {
+    fun prepareIndices(input: List<String>, handleIndex: (Long) -> Long): Long {
         return input.fold(0L) { sumOfInvalidIds, it ->
             val (startId, endId) = it.split("-").map(String::toLong)
 
             sumOfInvalidIds + (startId..endId).fold(0L) { sumOfInvalidIdsInRange, id ->
-                val idStr = id.toString()
-
-                if (idStr.length % 2 != 0) {
-                    return@fold sumOfInvalidIdsInRange
-                }
-
-                val idStrHalfLength = idStr.length / 2
-                if (idStr.take(idStrHalfLength) == idStr.takeLast(idStrHalfLength)) {
-                    sumOfInvalidIdsInRange + id
-                } else {
-                    sumOfInvalidIdsInRange
-                }
+                sumOfInvalidIdsInRange + handleIndex(id)
             }
+        }
+    }
+
+    fun part1(input: List<String>): Long {
+        return prepareIndices(input) { id ->
+            val idStr = id.toString()
+
+            if (idStr.length % 2 != 0) {
+                return@prepareIndices 0L
+            }
+
+            val idStrHalfLength = idStr.length / 2
+            if (idStr.take(idStrHalfLength) == idStr.takeLast(idStrHalfLength)) {
+                return@prepareIndices id
+            } else {
+                return@prepareIndices 0L
+            }
+        }
+    }
+
+    fun part2(input: List<String>): Long {
+        return prepareIndices(input) { id ->
+            0
         }
     }
 
