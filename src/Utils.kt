@@ -35,6 +35,6 @@ fun Any?.println() = println(this)
  */
 fun Any?.println(prefix: String = "", postfix: String = "") = kotlin.io.println("$prefix$this$postfix")
 
-fun checkEquals(expected: Any?, actual: Any?) {
+fun checkEquals(actual: Any?, expected: Any?) {
     check(actual == expected) { "$actual is not equal to $expected" }
 }
