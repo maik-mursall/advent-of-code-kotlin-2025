@@ -5,21 +5,49 @@ import println
 import readInput
 
 fun main() {
-    fun part1(input: List<String>) = 0L
+    fun part1(grid: List<String>) = grid.indices.sumOf { rowIndex ->
+        val rowIndices = grid[rowIndex].indices
+
+        rowIndices.sumOf sumOfCol@{ colIndex ->
+            if (grid[rowIndex][colIndex] != '@') return@sumOfCol 0L
+            val colIndices = (colIndex - 1)..(colIndex + 1)
+            val rowIndices = (rowIndex - 1)..(rowIndex + 1)
+
+            val numberOfNeighbours = rowIndices.sumOf rowSumOf@{ currentRowIndex ->
+                if (currentRowIndex !in grid.indices) return@rowSumOf 0L
+                val currentRowIndices = grid[currentRowIndex].indices
+
+                colIndices.sumOf colSumOf@{ currentColIndex ->
+                    if (currentColIndex == colIndex && currentRowIndex == rowIndex) return@colSumOf 0
+                    if (currentColIndex !in currentRowIndices) return@colSumOf 0
+
+                    val neighborChar = grid[currentRowIndex][currentColIndex]
+
+                    if (neighborChar == '@') 1L else 0L
+                }
+            }
+
+            if (numberOfNeighbours < 4) {
+                1L
+            } else {
+                0L
+            }
+        }
+    }
 
     fun part2(input: List<String>) = 0L
 
     // Test if implementation meets criteria from the description, like:
-    checkEquals(part1(listOf()), 0L)
-    checkEquals(part2(listOf()), 0L)
+    //checkEquals(part1(listOf()), 0L)
+    //checkEquals(part2(listOf()), 0L)
 
     // Or read a large test input from the `src/Day04_test.txt` file:
     val testInput = readInput("day04/Day04_test")
-    checkEquals(part1(testInput), 0L)
-    checkEquals(part2(testInput), 0L)
+    checkEquals(part1(testInput), 13L)
+    //checkEquals(part2(testInput), 0L)
 
     // Read the input from the `src/Day04.txt` file.
     val input = readInput("day04/Day04")
     part1(input).println("Part 1: ")
-    part2(input).println("Part 2: ")
+    //part2(input).println("Part 2: ")
 }
