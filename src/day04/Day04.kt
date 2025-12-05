@@ -5,67 +5,48 @@ import println
 import readInput
 
 fun main() {
-    fun part1(grid: List<String>) = grid.indices.sumOf { rowIndex ->
-        val rowIndices = grid[rowIndex].indices
+    fun findValidIndices(grid: List<String>, onIndexFound: (Int, Int) -> Unit) {
+        grid.indices.forEach { rowIndex ->
+            val rowIndices = grid[rowIndex].indices
 
-        rowIndices.sumOf sumOfCol@{ colIndex ->
-            if (grid[rowIndex][colIndex] != '@') return@sumOfCol 0L
-            val colIndices = (colIndex - 1)..(colIndex + 1)
-            val rowIndices = (rowIndex - 1)..(rowIndex + 1)
+            rowIndices.forEach { colIndex ->
+                if (grid[rowIndex][colIndex] != '@') return@forEach
+                val colIndices = (colIndex - 1)..(colIndex + 1)
+                val rowIndices = (rowIndex - 1)..(rowIndex + 1)
 
-            val numberOfNeighbours = rowIndices.sumOf rowSumOf@{ currentRowIndex ->
-                if (currentRowIndex !in grid.indices) return@rowSumOf 0L
-                val currentRowIndices = grid[currentRowIndex].indices
+                val numberOfNeighbours = rowIndices.sumOf rowSumOf@{ currentRowIndex ->
+                    if (currentRowIndex !in grid.indices) return@rowSumOf 0L
+                    val currentRowIndices = grid[currentRowIndex].indices
 
-                colIndices.sumOf colSumOf@{ currentColIndex ->
-                    if (currentColIndex == colIndex && currentRowIndex == rowIndex) return@colSumOf 0
-                    if (currentColIndex !in currentRowIndices) return@colSumOf 0
+                    colIndices.sumOf colSumOf@{ currentColIndex ->
+                        if (currentColIndex == colIndex && currentRowIndex == rowIndex) return@colSumOf 0
+                        if (currentColIndex !in currentRowIndices) return@colSumOf 0
 
-                    val neighborChar = grid[currentRowIndex][currentColIndex]
+                        val neighborChar = grid[currentRowIndex][currentColIndex]
 
-                    if (neighborChar == '@') 1L else 0L
+                        if (neighborChar == '@') 1L else 0L
+                    }
                 }
-            }
 
-            if (numberOfNeighbours < 4) {
-                1L
-            } else {
-                0L
+                if (numberOfNeighbours < 4) {
+                    onIndexFound(rowIndex, colIndex)
+                }
             }
         }
     }
 
-    fun part2Step(grid: List<String>) = grid.indices.fold(mutableListOf<Pair<Int, Int>>()) { indicesToRemove, rowIndex ->
-        val rowIndices = grid[rowIndex].indices
-
-        val foundIndices = rowIndices.mapNotNull { colIndex ->
-            if (grid[rowIndex][colIndex] != '@') return@mapNotNull null
-            val colIndices = (colIndex - 1)..(colIndex + 1)
-            val rowIndices = (rowIndex - 1)..(rowIndex + 1)
-
-            val numberOfNeighbours = rowIndices.sumOf rowSumOf@{ currentRowIndex ->
-                if (currentRowIndex !in grid.indices) return@rowSumOf 0L
-                val currentRowIndices = grid[currentRowIndex].indices
-
-                colIndices.sumOf colSumOf@{ currentColIndex ->
-                    if (currentColIndex == colIndex && currentRowIndex == rowIndex) return@colSumOf 0
-                    if (currentColIndex !in currentRowIndices) return@colSumOf 0
-
-                    val neighborChar = grid[currentRowIndex][currentColIndex]
-
-                    if (neighborChar == '@') 1L else 0L
-                }
-            }
-
-            if (numberOfNeighbours < 4) {
-                rowIndex to colIndex
-            } else {
-                null
-            }
+    fun part1(grid: List<String>): Long {
+        var count = 0L
+        findValidIndices(grid) { _,_ ->
+            count++
         }
+        return count
+    }
 
-        indicesToRemove.addAll(foundIndices)
-        indicesToRemove
+    fun part2Step(grid: List<String>) = mutableListOf<Pair<Int, Int>>().apply {
+        findValidIndices(grid) { rowIndex, colIndex ->
+            add(rowIndex to colIndex)
+        }
     }
 
     fun part2(grid: List<String>): Long {
