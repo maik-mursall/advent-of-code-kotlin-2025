@@ -5,7 +5,7 @@ import println
 import readInput
 
 fun main() {
-    fun extractLines(input: List<String>): Pair<List<List<Long>>, List<Char>> {
+    fun extractLinesHorizontally(input: List<String>): Pair<List<List<Long>>, List<Char>> {
         val numberLines = input.take(input.size - 1)
             .map { numberLine ->
                 numberLine
@@ -27,7 +27,7 @@ fun main() {
         else -> throw IllegalStateException("Unsupported operator: $operator")
     }
 
-    fun part1(input: List<String>) = extractLines(input).let { (numberLines, operatorLine) ->
+    fun part1(input: List<String>) = extractLinesHorizontally(input).let { (numberLines, operatorLine) ->
         operatorLine.foldIndexed(0L) { index, sumOfOperations, operator ->
             val numbersInColumn = numberLines.map { it[index] }
             sumOfOperations + applyOperation(numbersInColumn, operator)
