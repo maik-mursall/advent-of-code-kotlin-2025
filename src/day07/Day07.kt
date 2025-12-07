@@ -7,26 +7,23 @@ import readInput
 fun main() {
     fun part1(input: List<String>): Long {
         var splitterHitCount = 0L
-        val currentSimulationSpace = input.map { it.toCharArray() }
-        currentSimulationSpace.forEachIndexed { y, simulationLine ->
-            if (y >= currentSimulationSpace.size - 1) {
-                return@forEachIndexed
-            }
-
-            simulationLine.forEachIndexed { x, cell ->
+        val simulationSpace = input.map { it.toCharArray() }
+        (0 until (simulationSpace.size - 1)).forEach { y ->
+            val simulationLineBelowIndex = y + 1
+            simulationSpace[y].forEachIndexed { x, cell ->
                 when (cell) {
                     'S' -> {
-                        currentSimulationSpace[y + 1][x] = '|'
+                        simulationSpace[simulationLineBelowIndex][x] = '|'
                     }
 
                     '|' -> {
-                        val cellBelow = currentSimulationSpace[y + 1][x]
+                        val cellBelow = simulationSpace[simulationLineBelowIndex][x]
                         if (cellBelow == '^') {
-                            currentSimulationSpace[y + 1][x - 1] = '|'
-                            currentSimulationSpace[y + 1][x + 1] = '|'
+                            simulationSpace[simulationLineBelowIndex][x - 1] = '|'
+                            simulationSpace[simulationLineBelowIndex][x + 1] = '|'
                             splitterHitCount++
                         } else {
-                            currentSimulationSpace[y + 1][x] = '|'
+                            simulationSpace[simulationLineBelowIndex][x] = '|'
                         }
                     }
                 }
