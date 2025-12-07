@@ -21,40 +21,64 @@ fun main() {
         return numberLines to operatorLine
     }
 
+    fun applyOperation(numbers: List<Long>, operator: Char) = when (operator) {
+        '+' -> numbers.sum()
+        '*' -> numbers.fold(1L) { acc, num -> acc * num }
+        else -> throw IllegalStateException("Unsupported operator: $operator")
+    }
+
     fun part1(input: List<String>) = extractLines(input).let { (numberLines, operatorLine) ->
         operatorLine.foldIndexed(0L) { index, sumOfOperations, operator ->
             val numbersInColumn = numberLines.map { it[index] }
-            val operationResult = when (operator) {
-                '+' -> numbersInColumn.sum()
-                '*' -> numbersInColumn.fold(1L) { acc, num -> acc * num }
-                else -> throw IllegalStateException("Unsupported operator: $operator")
-            }
-
-            sumOfOperations + operationResult
+            sumOfOperations + applyOperation(numbersInColumn, operator)
         }
     }
 
-    fun part2(input: List<String>): Long {
-        return 0L
+    fun extractNumbersVertically(input: List<String>) = input.first().indices.fold(listOf<Long>()) { acc, index ->
+        val numberInColum = input.map { it[index] }.joinToString("").trim().toLong()
+        acc.plusElement(numberInColum)
     }
 
-    // Test if implementation meets criteria from the description, like:
-    checkEquals(
-        part1(
-            listOf(
-                "123 328",
-                "45  64",
-                "6   98",
-                "*   +",
-            )
-        ), 33700L
-    )
-    checkEquals(part2(listOf()), 0L)
+    fun findNextOperatorIndex(line: String, startIndex: Int): Int {
+        for (i in startIndex until line.length) {
+            if (line[i] != ' ') {
+                return i
+            }
+        }
+        return line.length
+    }
 
-    // Or read a large test input from the `src/Day06_test.txt` file:
+
+    fun solveAlienMath(input: List<String>): Long {
+        val maxLineSize = input.maxOf { it.length }
+        val normalizedInput = input.map {
+            it.padEnd(maxLineSize + 1, ' ')
+        }
+        val numberLines = normalizedInput.take(normalizedInput.size - 1)
+        val operatorLine = normalizedInput.last()
+
+        var currentIndex = 0
+        var sum = 0L
+        while (currentIndex < operatorLine.length) {
+            val lastIndexBeforeNextOperator = findNextOperatorIndex(operatorLine, currentIndex + 1) - 1
+            val slicedNumbers = numberLines.map { it.slice(currentIndex until lastIndexBeforeNextOperator) }
+            val extractedNumbers = extractNumbersVertically(slicedNumbers)
+
+            sum += applyOperation(extractedNumbers, operatorLine[currentIndex])
+            currentIndex = lastIndexBeforeNextOperator + 1
+        }
+
+        return sum
+    }
+
+    fun part2(input: List<String>): Long {
+        return solveAlienMath(input)
+    }
+
+    // Read a large test input from the `src/Day06_test.txt` file:
     val testInput = readInput("day06/Day06_test")
     checkEquals(part1(testInput), 4277556L)
-    checkEquals(part2(testInput), 0L)
+    checkEquals(part2(testInput), 3263827L)
 
     // Read the input from the `src/Day06.txt` file.
     val input = readInput("day06/Day06")
