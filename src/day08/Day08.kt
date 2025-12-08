@@ -3,6 +3,32 @@ package day08
 import checkEquals
 import println
 import readInput
+import kotlin.math.sqrt
+
+data class Vector3D(val x: Int, val y: Int, val z: Int) {
+    operator fun plus(other: Vector3D) = Vector3D(x + other.x, y + other.y, z + other.z)
+    operator fun minus(other: Vector3D) = Vector3D(x - other.x, y - other.y, z - other.z)
+    operator fun times(number: Int) = Vector3D(x * number, y * number, z * number)
+    operator fun div(number: Int) = Vector3D(x / number, y / number, z / number)
+
+    fun magnitude(): Double {
+        return sqrt((x * x + y * y + z * z).toDouble())
+    }
+
+    fun distanceTo(other: Vector3D): Double {
+        val dx = x - other.x
+        val dy = y - other.y
+        val dz = z - other.z
+        return Vector3D(dx, dy, dz).magnitude()
+    }
+
+    companion object {
+        fun fromString(input: String): Vector3D {
+            val parts = input.split(",").map { it.trim().toInt() }
+            return Vector3D(parts[0], parts[1], parts[2])
+        }
+    }
+}
 
 fun main() {
     fun part1(input: List<String>): Long {
