@@ -1,50 +1,25 @@
 package day08
 
+import math.Vector3L
 import checkEquals
 import println
 import readInput
-import kotlin.math.sqrt
-
-data class Vector3D(val x: Long, val y: Long, val z: Long) {
-    operator fun plus(other: Vector3D) = Vector3D(x + other.x, y + other.y, z + other.z)
-    operator fun minus(other: Vector3D) = Vector3D(x - other.x, y - other.y, z - other.z)
-    operator fun times(number: Long) = Vector3D(x * number, y * number, z * number)
-    operator fun div(number: Long) = Vector3D(x / number, y / number, z / number)
-
-    fun magnitude(): Double {
-        return sqrt((x * x + y * y + z * z).toDouble())
-    }
-
-    fun distanceTo(other: Vector3D): Double {
-        val dx = x - other.x
-        val dy = y - other.y
-        val dz = z - other.z
-        return Vector3D(dx, dy, dz).magnitude()
-    }
-
-    companion object {
-        fun fromString(input: String): Vector3D {
-            val parts = input.split(",").map { it.trim().toLong() }
-            return Vector3D(parts[0], parts[1], parts[2])
-        }
-    }
-}
 
 data class Link(
-    val from: Vector3D,
-    val to: Vector3D,
+    val from: Vector3L,
+    val to: Vector3L,
     val distance: Double
 )
 
 fun main() {
-    fun calculatePossibleLinks(junctionBoxLocations: List<Vector3D>) =
+    fun calculatePossibleLinks(junctionBoxLocations: List<Vector3L>) =
         junctionBoxLocations.flatMapIndexed { index, junctionBoxToCheck ->
             junctionBoxLocations
                 .drop(index + 1)
                 .map { Link(junctionBoxToCheck, it, junctionBoxToCheck.distanceTo(it)) }
         }.sortedBy { it.distance }
 
-    fun MutableList<Set<Vector3D>>.performUnion(link: Link) {
+    fun MutableList<Set<Vector3L>>.performUnion(link: Link) {
         val fromCircuit = this.indexOfFirst { it.contains(link.from) }
         val toCircuit = this.indexOfFirst { it.contains(link.to) }
 
@@ -64,7 +39,7 @@ fun main() {
 
     fun solveForCircuits(
         links: List<Link>
-    ): List<Set<Vector3D>> {
+    ): List<Set<Vector3L>> {
         return links.fold(mutableListOf()) { circuits, link ->
             circuits.performUnion(link)
             circuits
@@ -72,7 +47,7 @@ fun main() {
     }
 
     fun part1(input: List<String>, maxIterations: Int): Long {
-        val junctionBoxLocations = input.map(Vector3D::fromString)
+        val junctionBoxLocations = input.map(Vector3L::fromString)
         val possibleEdges = calculatePossibleLinks(junctionBoxLocations)
         val circuits = solveForCircuits(possibleEdges.take(maxIterations))
 
@@ -83,7 +58,7 @@ fun main() {
         links: List<Link>,
         numberOfJunctions: Int,
     ): Link? {
-        val circuits = mutableListOf<Set<Vector3D>>()
+        val circuits = mutableListOf<Set<Vector3L>>()
         links.forEach { link ->
             circuits.performUnion(link)
 
@@ -95,7 +70,7 @@ fun main() {
     }
 
     fun part2(input: List<String>): Long {
-        val junctionBoxLocations = input.map(Vector3D::fromString)
+        val junctionBoxLocations = input.map(Vector3L::fromString)
         val finalLink = solveForSingleCircuit(calculatePossibleLinks(junctionBoxLocations), input.size)!!
 
         return finalLink.from.x * finalLink.to.x
