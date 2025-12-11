@@ -38,3 +38,11 @@ fun Any?.println(prefix: String = "", postfix: String = "") = kotlin.io.println(
 fun checkEquals(actual: Any?, expected: Any?) {
     check(actual == expected) { "$actual is not equal to $expected" }
 }
+
+fun <T, R> List<T>.mapUniquePairs(
+    transform: (T, T) -> R
+) = this.flatMapIndexed { index, item ->
+    this.drop(index + 1).map { other -> transform(item, other) }
+}
+
+fun List<Any>.uniquePairs() = this.mapUniquePairs { first, second -> first to second }

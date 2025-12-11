@@ -1,7 +1,8 @@
 package day08
 
-import math.Vector3L
 import checkEquals
+import mapUniquePairs
+import math.Vector3L
 import println
 import readInput
 
@@ -13,10 +14,8 @@ data class Link(
 
 fun main() {
     fun calculatePossibleLinks(junctionBoxLocations: List<Vector3L>) =
-        junctionBoxLocations.flatMapIndexed { index, junctionBoxToCheck ->
-            junctionBoxLocations
-                .drop(index + 1)
-                .map { Link(junctionBoxToCheck, it, junctionBoxToCheck.distanceTo(it)) }
+        junctionBoxLocations.mapUniquePairs { junctionBoxToCheck, otherJunctionBox ->
+            Link(junctionBoxToCheck, otherJunctionBox, junctionBoxToCheck.distanceTo(otherJunctionBox))
         }.sortedBy { it.distance }
 
     fun MutableList<Set<Vector3L>>.performUnion(link: Link) {
