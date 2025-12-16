@@ -1,6 +1,7 @@
 package day05
 
 import checkEquals
+import fastSize
 import println
 import readInput
 
@@ -28,10 +29,6 @@ fun main() {
                 it.contains(indexToCheck)
             }
         }
-    }
-
-    fun LongRange.fastSize(): Long {
-        return (this.last + 1) - this.first
     }
 
     fun mergeRangesStep(ranges: List<LongRange>): List<LongRange> = ranges.fold(mutableListOf()) { acc, range ->

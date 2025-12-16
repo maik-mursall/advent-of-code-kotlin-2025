@@ -46,3 +46,7 @@ fun <T, R> List<T>.mapUniquePairs(
 }
 
 fun <T> List<T>.uniquePairs() = this.mapUniquePairs { first, second -> first to second }
+
+fun LongRange.fastSize(): Long {
+    return (this.last + 1) - this.first
+}
