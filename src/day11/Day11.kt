@@ -7,13 +7,15 @@ import readInput
 typealias Node = String
 
 fun main() {
-    fun part1(input: List<String>): Long {
-        val nodesWithConnections: Map<Node, List<Node>> = input.map {
-            val parts = it.split(' ')
-            val node = parts[0].dropLast(1)
+    fun parseInput(input: List<String>): Map<Node, List<Node>> = input.map {
+        val parts = it.split(' ')
+        val node = parts[0].dropLast(1)
 
-            node to parts.drop(1)
-        }.toMap()
+        node to parts.drop(1)
+    }.toMap()
+
+    fun part1(input: List<String>): Long {
+        val nodesWithConnections = parseInput(input)
 
         fun step(
             connections: List<Node>
