@@ -17,8 +17,8 @@ fun main() {
     checkEquals(part1(listOf()), 0L)
     checkEquals(part2(listOf()), 0L)
 
-    // Or read a large test input from the `src/day12/Day09_test.txt` file:
-    val testInput = readInput("day12/Day09_test")
+    // Or read a large test input from the `src/day12/Day12_test.txt` file:
+    val testInput = readInput("day12/Day12_test")
     checkEquals(part1(testInput), 0L)
     checkEquals(part2(testInput), 0L)
 
