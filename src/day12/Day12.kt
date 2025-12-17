@@ -8,6 +8,20 @@ data class PresentTemplate(
     val size: Int,
     val data: CharArray,
 ) {
+    fun rotateRight(): PresentTemplate {
+        val newCharArray = CharArray(data.size) { '.' }
+
+        data.forEachIndexed { index, it ->
+            val newColumn = index % size
+            val newRow = (size - 1) - index / size
+            newCharArray[(newColumn * size) + newRow] = it
+        }
+
+        return copy(
+            data = newCharArray,
+        )
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -67,6 +81,8 @@ fun main() {
 
     fun part1(input: List<String>): Long {
         val (presentTemplates, grids, targets) = parseInput(input)
+
+
 
         return 0L
     }
