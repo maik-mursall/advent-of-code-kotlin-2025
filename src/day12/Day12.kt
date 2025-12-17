@@ -4,6 +4,13 @@ import checkEquals
 import println
 import readInput
 
+typealias Vector2I = Pair<Int, Int>
+typealias Grid = List<CharArray>
+
+fun Grid.prettyPrint() = joinToString("\n") {
+    it.joinToString("")
+}.println()
+
 data class PresentTemplate(
     val size: Int,
     val data: CharArray,
@@ -20,6 +27,34 @@ data class PresentTemplate(
         return copy(
             data = newCharArray,
         )
+    }
+
+    fun applyTo(grid: Grid, position: Vector2I): Boolean {
+        if ((size + position.second - 1) !in grid.indices || (size + position.first - 1) !in grid.first().indices) {
+            return false
+        }
+
+        // Check pass
+        data.forEachIndexed { index, it ->
+            val column = (index % size) + position.first
+            val row = (index / size) + position.second
+
+            if (grid[row][column] == '#' && it == '#') {
+                return false
+            }
+        }
+
+        // assign pass
+        data.forEachIndexed { index, it ->
+            if (it == '.') return@forEachIndexed
+
+            val column = (index % size) + position.first
+            val row = (index / size) + position.second
+
+            grid[row][column] = it
+        }
+
+        return true
     }
 
     override fun equals(other: Any?): Boolean {
@@ -49,7 +84,7 @@ data class PresentTemplate(
 }
 
 fun main() {
-    fun parseInput(input: List<String>): Triple<List<PresentTemplate>, List<List<CharArray>>, List<List<Int>>> {
+    fun parseInput(input: List<String>): Triple<List<PresentTemplate>, List<Grid>, List<List<Int>>> {
         val presentTemplates = mutableListOf<PresentTemplate>()
         val grids = mutableListOf<List<CharArray>>()
         val targets = mutableListOf<List<Int>>()
