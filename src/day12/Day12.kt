@@ -4,8 +4,70 @@ import checkEquals
 import println
 import readInput
 
+data class PresentTemplate(
+    val size: Int,
+    val data: CharArray,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PresentTemplate
+
+        if (size != other.size) return false
+        if (!data.contentEquals(other.data)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = size
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
+
+    companion object {
+        fun parse(input: List<String>) = PresentTemplate(
+            size = input.first().length,
+            data = input.takeLast(input.first().length).joinToString("").toCharArray()
+        )
+    }
+}
+
 fun main() {
+    fun parseInput(input: List<String>): Triple<List<PresentTemplate>, List<List<CharArray>>, List<List<Int>>> {
+        val presentTemplates = mutableListOf<PresentTemplate>()
+        val grids = mutableListOf<List<CharArray>>()
+        val targets = mutableListOf<List<Int>>()
+
+        var currentIndex = 0
+        while (currentIndex < input.size) {
+            val line = input[currentIndex]
+
+            if ('x' !in line) {
+                val size = input[currentIndex + 1].length
+                val presentBlock = input.slice((currentIndex + 1) .. (currentIndex + size))
+                presentTemplates.add(PresentTemplate.parse(presentBlock))
+                currentIndex += size + 2
+            } else {
+                val sectionDividerIndex = line.indexOf(':')
+                val gridSection = line.substring(0 until sectionDividerIndex)
+
+                val (width, height) = gridSection.split("x").map(String::toInt)
+                grids.add(List(height) { CharArray(width) { '.' } })
+
+                val targetSection = line.substring((sectionDividerIndex + 2) until line.length)
+                targets.add(targetSection.split(' ').map(String::toInt))
+                currentIndex++
+            }
+        }
+
+        return Triple(presentTemplates, grids, targets)
+    }
+
     fun part1(input: List<String>): Long {
+        val (presentTemplates, grids, targets) = parseInput(input)
+
         return 0L
     }
 
@@ -14,7 +76,7 @@ fun main() {
     }
 
     // Test if implementation meets criteria from the description, like:
-    checkEquals(part1(listOf()), 0L)
+    //checkEquals(part1(listOf()), 0L)
     checkEquals(part2(listOf()), 0L)
 
     // Or read a large test input from the `src/day12/Day12_test.txt` file:
