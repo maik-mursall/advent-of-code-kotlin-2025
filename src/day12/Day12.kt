@@ -3,6 +3,7 @@ package day12
 import checkEquals
 import println
 import readInput
+import kotlin.collections.mutableListOf
 
 typealias Vector2I = Pair<Int, Int>
 typealias Grid = List<CharArray>
@@ -117,9 +118,36 @@ fun main() {
     fun part1(input: List<String>): Long {
         val (presentTemplates, grids, targets) = parseInput(input)
 
+        fun solveForGrid(grid: Grid, target: List<Int>): Boolean {
+            val validXRange = (0..grid.first().size - presentTemplates.first().size)
+            val validYRange = (0..grid.size - presentTemplates.first().size)
 
+            val targetPresentTemplates = target.foldIndexed(emptyList<PresentTemplate>()) { index, acc, it ->
+                acc + List(it) { presentTemplates[index] }
+            }
 
-        return 0L
+            return targetPresentTemplates.all { targetPresentTemplates ->
+                val presentTemplateVariants = mutableListOf(targetPresentTemplates)
+                repeat(3) {
+                    presentTemplateVariants.add(presentTemplateVariants.last().rotateRight())
+                }
+
+                validXRange.any { x ->
+                    validYRange.any { y ->
+                        presentTemplateVariants.any { it.applyTo(grid, Vector2I(x, y)) }
+                    }
+                }
+            }
+        }
+
+        var count = 0L
+        grids.forEachIndexed { index, grid ->
+            if (solveForGrid(grid, targets[index])) {
+                count++
+            }
+        }
+
+        return count
     }
 
     fun part2(input: List<String>): Long {
@@ -132,7 +160,7 @@ fun main() {
 
     // Or read a large test input from the `src/day12/Day12_test.txt` file:
     val testInput = readInput("day12/Day12_test")
-    checkEquals(part1(testInput), 0L)
+    checkEquals(part1(testInput), 2L)
     checkEquals(part2(testInput), 0L)
 
     // Read the input from the `src/day12/Day12.txt` file.
